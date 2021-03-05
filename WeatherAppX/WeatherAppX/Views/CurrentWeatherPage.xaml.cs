@@ -16,5 +16,7 @@ namespace WeatherAppX.Views
         {
             InitializeComponent();
         }
+
+        private string Location = "France";
     }
 }

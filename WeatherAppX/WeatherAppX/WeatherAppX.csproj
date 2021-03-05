@@ -16,11 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-    <Folder Include="Helper\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Update="Views\CurrentWeatherPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
