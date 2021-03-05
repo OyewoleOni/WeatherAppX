@@ -1,4 +1,5 @@
 ﻿using System;
+using WeatherAppX.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -10,7 +11,7 @@ namespace WeatherAppX
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            MainPage = new CurrentWeatherPage();
         }
 
         protected override void OnStart()
