@@ -15,7 +15,7 @@ namespace WeatherAppX.Helper
             {
                 if (!string.IsNullOrWhiteSpace(authId))
                 {
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", authId);
+                    client.DefaultRequestHeaders.Add("Authorization", authId);
                 }
                 var response = await client.GetAsync(url);
                 if (response.IsSuccessStatusCode)

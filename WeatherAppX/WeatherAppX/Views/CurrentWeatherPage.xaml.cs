@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WeatherAppX.Helper;
 using WeatherAppX.Models;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -17,10 +18,64 @@ namespace WeatherAppX.Views
         public CurrentWeatherPage()
         {
             InitializeComponent();
-            GetWeatherInfo();
+            //GetWeatherInfo();
+            GetCoordinate();
         }
 
-        private string Location = "France";
+        private string Location { get; set; } = "France";
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+
+        private async void GetCoordinate()
+        {
+            try
+            {
+                var request = new GeolocationRequest(GeolocationAccuracy.Best);
+                var location = await Geolocation.GetLocationAsync(request);
+
+                if(location != null)
+                {
+                    Latitude = location.Latitude;
+                    Longitude = location.Longitude;
+                    Location = await GetCity(location);
+                    Location = "Lagos";
+
+                    GetWeatherInfo();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+        }
+
+        private async Task<string> GetCity(Location location)
+        {
+            var palces = await Geocoding.GetPlacemarksAsync(location);
+
+            var currentPalce = palces?.FirstOrDefault();
+
+            if (currentPalce != null)
+                return $"{currentPalce.Locality} , {currentPalce.CountryName}";
+
+            return null;
+        }
+
+        private async void GetBackground()
+        {
+            var url = $"https://api.pexels.com/v1/search?query={Location}&per_page=15&page=1";
+
+            var result = await ApiCaller.Get(url, "563492ad6f91700001000001b8c7c360a98b428e97de9684d950dc5e");
+            if (result.IsSuccessful)
+            {
+                var bgInfo = JsonConvert.DeserializeObject<BackgroundInf>(result.Response);
+                if(bgInfo != null && bgInfo.photos.Length> 0)
+                {
+                    bgImg.Source = ImageSource.FromUri(new Uri(bgInfo.photos[new Random().Next(0, bgInfo.photos.Length -1)]
+                                                            .src.medium));
+                }
+            }
+        }
 
         private async void GetWeatherInfo()
         {
@@ -44,11 +99,12 @@ namespace WeatherAppX.Views
                    
                     DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(weatherInfo.dt);
                     
-                    var date = dateTimeOffset.DateTime;
+                    var date = dateTimeOffset.DateTime.Date;
                     
                     dateTxt.Text = date.ToString("dddd, MMM, dd").ToUpper();
 
                     GetForecast();
+                    GetBackground();
                 }
                 catch (Exception ex)
                 {
