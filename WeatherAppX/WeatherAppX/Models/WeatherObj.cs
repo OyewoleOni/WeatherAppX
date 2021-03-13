@@ -40,16 +40,18 @@ namespace WeatherAppX.Models
         public Clouds clouds { get; set; }
         public Wind wind { get; set; }
         public int visibility { get; set; }
-        public int pop { get; set; }
+        public float pop { get; set; }
         public Sys sys { get; set; }
         public string dt_txt { get; set; }
     }
 
     public class WeatherInfo
     {
+
         public Coord coord { get; set; }
         public Weather[] weather { get; set; }
         public string _base { get; set; }
+
         public Main main { get; set; }
         public int visibility { get; set; }
         public Wind wind { get; set; }
